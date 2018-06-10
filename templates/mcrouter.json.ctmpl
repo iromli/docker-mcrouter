@@ -1,0 +1,22 @@
+{
+    "pools": {
+        "A": {
+            "servers": [
+                {{range $index, $service := service "memcache" }}
+                "{{$service.Address}}:{{$service.Port}}",
+                {{else}}
+                "localhost:11211"
+                {{end}}
+            ]
+        }
+    },
+    "route": {
+        "type": "OperationSelectorRoute",
+        "operation_policies": {
+            "add": "AllSyncRoute|Pool|A",
+            "delete": "AllSyncRoute|Pool|A",
+            "set": "AllSyncRoute|Pool|A",
+            "get": "MissFailoverRoute|Pool|A"
+        }
+    }
+}
